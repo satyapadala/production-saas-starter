@@ -47,10 +47,8 @@ func (bus *InMemoryEventBus) Publish(ctx context.Context, event Event) error {
 	copy(handlers, bus.subscribers[event.EventName()])
 	bus.mu.RUnlock()
 
-	// Log event publishing
-		event.EventName(), event.EventID(), len(handlers))
-
 	if len(handlers) == 0 {
+		return nil
 	}
 
 	// Execute handlers concurrently
@@ -62,8 +60,6 @@ func (bus *InMemoryEventBus) Publish(ctx context.Context, event Event) error {
 		go func(handlerIndex int, h EventHandler[Event]) {
 			defer wg.Done()
 
-				handlerIndex+1, event.EventName(), event.EventID())
-
 			// Apply middleware chain
 			finalHandler := h
 			for i := len(bus.middleware) - 1; i >= 0; i-- {
@@ -71,10 +67,7 @@ func (bus *InMemoryEventBus) Publish(ctx context.Context, event Event) error {
 			}
 
 			if err := finalHandler(ctx, event); err != nil {
-					handlerIndex+1, event.EventName(), err)
 				errCh <- fmt.Errorf("handler error for event %s: %w", event.EventName(), err)
-			} else {
-					handlerIndex+1, event.EventName())
 			}
 		}(i, handler)
 	}
@@ -106,9 +99,6 @@ func (bus *InMemoryEventBus) Subscribe(eventName string, handler EventHandler[Ev
 	}
 
 	bus.subscribers[eventName] = append(bus.subscribers[eventName], handler)
-	handlerCount := len(bus.subscribers[eventName])
-
-		eventName, handlerCount)
 
 	return nil
 }

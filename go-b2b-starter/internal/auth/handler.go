@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -51,7 +50,6 @@ func (h *Handler) GetRoles(c *gin.Context) {
 // @Router /rbac/permissions [get]
 func (h *Handler) GetPermissions(c *gin.Context) {
 	permissions := h.service.GetAllPermissions()
-
 
 	permDTOs := make([]PermissionDTO, len(permissions))
 	for i, perm := range permissions {
