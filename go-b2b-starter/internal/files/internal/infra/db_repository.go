@@ -220,7 +220,7 @@ func (r *dbRepository) GetByEntity(ctx context.Context, entityType string, entit
 }
 
 // Helper methods for conversion and lookup
-func (r *dbRepository) getCategoryID(ctx context.Context, category files.FileCategory) (int16, error) {
+func (r *dbRepository) getCategoryID(ctx context.Context, category file_manager.FileCategory) (int16, error) {
 	categories, err := r.store.GetFileCategories(ctx)
 	if err != nil {
 		return 0, err
@@ -235,7 +235,7 @@ func (r *dbRepository) getCategoryID(ctx context.Context, category files.FileCat
 	return 0, fmt.Errorf("category not found: %s", category)
 }
 
-func (r *dbRepository) getContextID(ctx context.Context, context files.FileContext) (int16, error) {
+func (r *dbRepository) getContextID(ctx context.Context, context file_manager.FileContext) (int16, error) {
 	contexts, err := r.store.GetFileContexts(ctx)
 	if err != nil {
 		return 0, err
@@ -328,8 +328,8 @@ func (r *dbRepository) convertFromListRow(row *sqlc.ListFileAssetsRow) *domain.F
 		OriginalFilename: row.OriginalFileName,
 		Size:             row.FileSize,
 		ContentType:      row.MimeType,
-		Category:         files.FileCategory(row.CategoryName),
-		Context:          files.FileContext(row.ContextName),
+		Category:         file_manager.FileCategory(row.CategoryName),
+		Context:          file_manager.FileContext(row.ContextName),
 		StoragePath:      row.StoragePath,
 		BucketName:       row.BucketName,
 		IsPublic:         isPublic,
@@ -375,7 +375,7 @@ func (r *dbRepository) convertFromCategoryRow(row *sqlc.GetFileAssetsByCategoryR
 		OriginalFilename: row.OriginalFileName,
 		Size:             row.FileSize,
 		ContentType:      row.MimeType,
-		Category:         files.FileCategory(row.CategoryName),
+		Category:         file_manager.FileCategory(row.CategoryName),
 		StoragePath:      row.StoragePath,
 		BucketName:       row.BucketName,
 		IsPublic:         isPublic,
@@ -421,7 +421,7 @@ func (r *dbRepository) convertFromContextRow(row *sqlc.GetFileAssetsByContextRow
 		OriginalFilename: row.OriginalFileName,
 		Size:             row.FileSize,
 		ContentType:      row.MimeType,
-		Context:          files.FileContext(row.ContextName),
+		Context:          file_manager.FileContext(row.ContextName),
 		StoragePath:      row.StoragePath,
 		BucketName:       row.BucketName,
 		IsPublic:         isPublic,

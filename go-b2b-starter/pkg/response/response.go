@@ -16,7 +16,7 @@ func Success(c *gin.Context, statusCode int, data interface{}) {
 
 // Error sends an error response
 func Error(c *gin.Context, statusCode int, message string, err error) {
-	c.JSON(statusCode, errors.NewHTTPError(
+	c.JSON(statusCode, httperr.NewHTTPError(
 		statusCode,
 		"error",
 		message,

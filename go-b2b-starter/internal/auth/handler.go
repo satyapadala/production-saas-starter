@@ -1,4 +1,4 @@
-package rbac
+package auth
 
 import (
 	"fmt"
@@ -7,15 +7,14 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/moasq/go-b2b-starter/pkg/response"
-	"github.com/moasq/go-b2b-starter/internal/auth"
 )
 
 // Handler handles RBAC API endpoints
 type Handler struct {
-	service auth.RBACService
+	service RBACService
 }
 
-func NewHandler(service auth.RBACService) *Handler {
+func NewHandler(service RBACService) *Handler {
 	return &Handler{
 		service: service,
 	}
@@ -32,12 +31,12 @@ func NewHandler(service auth.RBACService) *Handler {
 func (h *Handler) GetRoles(c *gin.Context) {
 	roles := h.service.GetAllRoles()
 
-	roleDTOs := make([]auth.RoleDTO, len(roles))
+	roleDTOs := make([]RoleDTO, len(roles))
 	for i, role := range roles {
-		roleDTOs[i] = auth.NewRoleDTO(role)
+		roleDTOs[i] = NewRoleDTO(role)
 	}
 
-	response.Success(c, http.StatusOK, auth.RolesResponse{
+	response.Success(c, http.StatusOK, RolesResponse{
 		Roles: roleDTOs,
 	})
 }
@@ -55,12 +54,12 @@ func (h *Handler) GetPermissions(c *gin.Context) {
 
 	fmt.Printf("[DEBUG] API Handler - Returning %d permissions\n", len(permissions))
 
-	permDTOs := make([]auth.PermissionDTO, len(permissions))
+	permDTOs := make([]PermissionDTO, len(permissions))
 	for i, perm := range permissions {
-		permDTOs[i] = auth.NewPermissionDTO(perm)
+		permDTOs[i] = NewPermissionDTO(perm)
 	}
 
-	response.Success(c, http.StatusOK, auth.PermissionsResponse{
+	response.Success(c, http.StatusOK, PermissionsResponse{
 		Permissions: permDTOs,
 	})
 }
@@ -77,16 +76,16 @@ func (h *Handler) GetPermissionsByCategory(c *gin.Context) {
 	categoriesMap := h.service.GetPermissionsByCategory()
 
 	// Convert to DTO format
-	result := make(map[string][]auth.PermissionDTO)
+	result := make(map[string][]PermissionDTO)
 	for category, perms := range categoriesMap {
-		permDTOs := make([]auth.PermissionDTO, len(perms))
+		permDTOs := make([]PermissionDTO, len(perms))
 		for i, perm := range perms {
-			permDTOs[i] = auth.NewPermissionDTO(perm)
+			permDTOs[i] = NewPermissionDTO(perm)
 		}
 		result[category] = permDTOs
 	}
 
-	response.Success(c, http.StatusOK, auth.PermissionsByCategoryResponse{
+	response.Success(c, http.StatusOK, PermissionsByCategoryResponse{
 		Categories: result,
 	})
 }
@@ -109,7 +108,7 @@ func (h *Handler) GetRoleDetails(c *gin.Context) {
 		return
 	}
 
-	roleResp := auth.NewRolePermissionsResponse(roleID)
+	roleResp := NewRolePermissionsResponse(roleID)
 	if roleResp == nil {
 		response.Error(c, http.StatusNotFound, "role_not_found", nil)
 		return
@@ -129,7 +128,7 @@ func (h *Handler) GetRoleDetails(c *gin.Context) {
 // @Failure 400 {object} map[string]string "Invalid request"
 // @Router /rbac/check-permission [post]
 func (h *Handler) CheckPermission(c *gin.Context) {
-	var req auth.PermissionCheckRequest
+	var req PermissionCheckRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.Error(c, http.StatusBadRequest, "invalid_request", err)
@@ -143,7 +142,7 @@ func (h *Handler) CheckPermission(c *gin.Context) {
 
 	hasPermission := h.service.HasPermission(req.RoleID, req.PermissionID)
 
-	response.Success(c, http.StatusOK, auth.PermissionCheckResponse{
+	response.Success(c, http.StatusOK, PermissionCheckResponse{
 		RoleID:        req.RoleID,
 		PermissionID:  req.PermissionID,
 		HasPermission: hasPermission,

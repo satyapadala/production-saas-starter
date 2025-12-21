@@ -4,7 +4,7 @@ import (
 	"context"
 	"io"
 
-	file_manager "github.com/moasq/go-b2b-starter/internal/files"
+	"github.com/moasq/go-b2b-starter/internal/files"
 )
 
 type FileRepository interface {

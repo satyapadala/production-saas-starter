@@ -1,4 +1,4 @@
-package subscriptions
+package billing
 
 import (
 	"go.uber.org/dig"

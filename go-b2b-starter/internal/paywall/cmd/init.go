@@ -47,3 +47,13 @@ func InitMiddlewareWithConfig(container *dig.Container, config *paywall.Middlewa
 	}
 	return nil
 }
+
+// SetupMiddleware is a direct alias to paywall.SetupMiddleware for convenience.
+func SetupMiddleware(container *dig.Container) error {
+	return paywall.SetupMiddleware(container)
+}
+
+// RegisterNamedMiddlewares is a direct alias to paywall.RegisterNamedMiddlewares for convenience.
+func RegisterNamedMiddlewares(container *dig.Container) error {
+	return paywall.RegisterNamedMiddlewares(container)
+}

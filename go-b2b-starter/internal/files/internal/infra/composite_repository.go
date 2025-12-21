@@ -256,11 +256,11 @@ func (r *compositeRepository) Exists(ctx context.Context, id int32) (bool, error
 	return exists, nil
 }
 
-func (r *compositeRepository) GetByCategory(ctx context.Context, category files.FileCategory, limit, offset int) ([]*domain.FileAsset, error) {
+func (r *compositeRepository) GetByCategory(ctx context.Context, category file_manager.FileCategory, limit, offset int) ([]*domain.FileAsset, error) {
 	return r.metadataRepo.GetByCategory(ctx, string(category), limit, offset)
 }
 
-func (r *compositeRepository) GetByContext(ctx context.Context, context files.FileContext, limit, offset int) ([]*domain.FileAsset, error) {
+func (r *compositeRepository) GetByContext(ctx context.Context, context file_manager.FileContext, limit, offset int) ([]*domain.FileAsset, error) {
 	return r.metadataRepo.GetByContext(ctx, string(context), limit, offset)
 }
 
@@ -269,7 +269,7 @@ func (r *compositeRepository) GetByEntity(ctx context.Context, entityType string
 }
 
 // Helper methods
-func (r *compositeRepository) generateStoragePath(category files.FileCategory, context files.FileContext, filename string) string {
+func (r *compositeRepository) generateStoragePath(category file_manager.FileCategory, context file_manager.FileContext, filename string) string {
 	timestamp := time.Now().Format("2006/01/02")
 	return fmt.Sprintf("%s/%s/%s/%s", category, context, timestamp, filename)
 }

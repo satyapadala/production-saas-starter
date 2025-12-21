@@ -1,4 +1,4 @@
-package subscriptions
+package billing
 
 import (
 	"fmt"
@@ -39,7 +39,7 @@ func NewHandler(billingService billingServices.BillingService, log logger.Logger
 func (h *Handler) GetBillingStatus(c *gin.Context) {
 	reqCtx := auth.GetRequestContext(c)
 	if reqCtx == nil {
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"missing_context",
 			"Organization context is required",
@@ -65,7 +65,7 @@ func (h *Handler) GetBillingStatus(c *gin.Context) {
 			return
 		}
 
-		c.JSON(http.StatusInternalServerError, errors.NewHTTPError(
+		c.JSON(http.StatusInternalServerError, httperr.NewHTTPError(
 			http.StatusInternalServerError,
 			"billing_status_failed",
 			fmt.Sprintf("Failed to retrieve billing status: %v", err),
@@ -102,7 +102,7 @@ func (h *Handler) VerifyPayment(c *gin.Context) {
 		h.logger.Error("[VerifyPayment] Failed to bind request JSON", map[string]any{
 			"error": err.Error(),
 		})
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"invalid_request",
 			fmt.Sprintf("Invalid request: %v", err),
@@ -117,7 +117,7 @@ func (h *Handler) VerifyPayment(c *gin.Context) {
 	// Validate session_id is not empty
 	if req.SessionID == "" {
 		h.logger.Warn("[VerifyPayment] Missing session_id in request", nil)
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"missing_session_id",
 			"Checkout session ID is required",
@@ -137,7 +137,7 @@ func (h *Handler) VerifyPayment(c *gin.Context) {
 			h.logger.Warn("[VerifyPayment] Checkout session not found", map[string]any{
 				"session_id": req.SessionID,
 			})
-			c.JSON(http.StatusNotFound, errors.NewHTTPError(
+			c.JSON(http.StatusNotFound, httperr.NewHTTPError(
 				http.StatusNotFound,
 				"session_not_found",
 				fmt.Sprintf("Checkout session not found: %s", req.SessionID),
@@ -149,7 +149,7 @@ func (h *Handler) VerifyPayment(c *gin.Context) {
 			"session_id": req.SessionID,
 			"error":      err.Error(),
 		})
-		c.JSON(http.StatusInternalServerError, errors.NewHTTPError(
+		c.JSON(http.StatusInternalServerError, httperr.NewHTTPError(
 			http.StatusInternalServerError,
 			"verification_failed",
 			fmt.Sprintf("Failed to verify payment: %v", err),
@@ -171,7 +171,7 @@ func (h *Handler) VerifyPayment(c *gin.Context) {
 			"session_id": req.SessionID,
 			"reason":     billingStatus.Reason,
 		})
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"payment_not_completed",
 			billingStatus.Reason,

@@ -34,7 +34,7 @@ func NewHandler(service services.DocumentService) *Handler {
 func (h *Handler) UploadDocument(c *gin.Context) {
 	reqCtx := auth.GetRequestContext(c)
 	if reqCtx == nil {
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"missing_context",
 			"Organization context is required",
@@ -45,7 +45,7 @@ func (h *Handler) UploadDocument(c *gin.Context) {
 	// Get uploaded file
 	file, header, err := c.Request.FormFile("file")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"invalid_file",
 			"Failed to read file: "+err.Error(),
@@ -71,7 +71,7 @@ func (h *Handler) UploadDocument(c *gin.Context) {
 	// Upload document
 	document, err := h.service.UploadDocument(c.Request.Context(), reqCtx.OrganizationID, req, file)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, errors.NewHTTPError(
+		c.JSON(http.StatusInternalServerError, httperr.NewHTTPError(
 			http.StatusInternalServerError,
 			"upload_failed",
 			"Failed to upload document: "+err.Error(),
@@ -96,7 +96,7 @@ func (h *Handler) UploadDocument(c *gin.Context) {
 func (h *Handler) ListDocuments(c *gin.Context) {
 	reqCtx := auth.GetRequestContext(c)
 	if reqCtx == nil {
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"missing_context",
 			"Organization context is required",
@@ -118,7 +118,7 @@ func (h *Handler) ListDocuments(c *gin.Context) {
 
 	response, err := h.service.ListDocuments(c.Request.Context(), reqCtx.OrganizationID, req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, errors.NewHTTPError(
+		c.JSON(http.StatusInternalServerError, httperr.NewHTTPError(
 			http.StatusInternalServerError,
 			"list_failed",
 			"Failed to list documents: "+err.Error(),
@@ -141,7 +141,7 @@ func (h *Handler) DeleteDocument(c *gin.Context) {
 	idParam := c.Param("id")
 	var docID int32
 	if _, err := fmt.Sscanf(idParam, "%d", &docID); err != nil {
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"invalid_id",
 			"Document ID must be a valid number",
@@ -151,7 +151,7 @@ func (h *Handler) DeleteDocument(c *gin.Context) {
 
 	reqCtx := auth.GetRequestContext(c)
 	if reqCtx == nil {
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"missing_context",
 			"Organization context is required",
@@ -160,7 +160,7 @@ func (h *Handler) DeleteDocument(c *gin.Context) {
 	}
 
 	if err := h.service.DeleteDocument(c.Request.Context(), reqCtx.OrganizationID, docID); err != nil {
-		c.JSON(http.StatusInternalServerError, errors.NewHTTPError(
+		c.JSON(http.StatusInternalServerError, httperr.NewHTTPError(
 			http.StatusInternalServerError,
 			"delete_failed",
 			"Failed to delete document: "+err.Error(),

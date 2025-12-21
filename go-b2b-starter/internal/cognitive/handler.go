@@ -47,7 +47,7 @@ type ChatRequest struct {
 func (h *Handler) Chat(c *gin.Context) {
 	reqCtx := auth.GetRequestContext(c)
 	if reqCtx == nil {
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"missing_context",
 			"Organization context is required",
@@ -57,7 +57,7 @@ func (h *Handler) Chat(c *gin.Context) {
 
 	var req ChatRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"invalid_request",
 			"Invalid JSON format: "+err.Error(),
@@ -76,7 +76,7 @@ func (h *Handler) Chat(c *gin.Context) {
 
 	response, err := h.ragService.Chat(c.Request.Context(), reqCtx.OrganizationID, reqCtx.AccountID, chatReq)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, errors.NewHTTPError(
+		c.JSON(http.StatusInternalServerError, httperr.NewHTTPError(
 			http.StatusInternalServerError,
 			"chat_failed",
 			"Failed to process chat: "+err.Error(),
@@ -100,7 +100,7 @@ func (h *Handler) Chat(c *gin.Context) {
 func (h *Handler) ListSessions(c *gin.Context) {
 	reqCtx := auth.GetRequestContext(c)
 	if reqCtx == nil {
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"missing_context",
 			"Organization context is required",
@@ -114,7 +114,7 @@ func (h *Handler) ListSessions(c *gin.Context) {
 
 	sessions, err := h.ragService.ListSessions(c.Request.Context(), reqCtx.OrganizationID, reqCtx.AccountID, int32(limit), int32(offset))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, errors.NewHTTPError(
+		c.JSON(http.StatusInternalServerError, httperr.NewHTTPError(
 			http.StatusInternalServerError,
 			"list_failed",
 			"Failed to list sessions: "+err.Error(),
@@ -143,7 +143,7 @@ func (h *Handler) GetSessionHistory(c *gin.Context) {
 	idParam := c.Param("id")
 	var sessionID int32
 	if _, err := fmt.Sscanf(idParam, "%d", &sessionID); err != nil {
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"invalid_id",
 			"Session ID must be a valid number",
@@ -153,7 +153,7 @@ func (h *Handler) GetSessionHistory(c *gin.Context) {
 
 	reqCtx := auth.GetRequestContext(c)
 	if reqCtx == nil {
-		c.JSON(http.StatusBadRequest, errors.NewHTTPError(
+		c.JSON(http.StatusBadRequest, httperr.NewHTTPError(
 			http.StatusBadRequest,
 			"missing_context",
 			"Organization context is required",
@@ -163,7 +163,7 @@ func (h *Handler) GetSessionHistory(c *gin.Context) {
 
 	messages, err := h.ragService.GetSessionHistory(c.Request.Context(), reqCtx.OrganizationID, sessionID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, errors.NewHTTPError(
+		c.JSON(http.StatusInternalServerError, httperr.NewHTTPError(
 			http.StatusInternalServerError,
 			"fetch_failed",
 			"Failed to fetch session history: "+err.Error(),
