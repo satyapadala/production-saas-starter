@@ -52,7 +52,6 @@ func (h *Handler) GetRoles(c *gin.Context) {
 func (h *Handler) GetPermissions(c *gin.Context) {
 	permissions := h.service.GetAllPermissions()
 
-	fmt.Printf("[DEBUG] API Handler - Returning %d permissions\n", len(permissions))
 
 	permDTOs := make([]PermissionDTO, len(permissions))
 	for i, perm := range permissions {

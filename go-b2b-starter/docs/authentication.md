@@ -98,7 +98,7 @@ func (h *Handler) MyHandler(c *gin.Context) {
 
 ### Roles
 
-Defined in `src/pkg/auth/roles.go`:
+Defined in `internal/auth/roles.go`:
 
 - `RoleAdmin` - Full system access
 - `RoleManager` - Organization management
@@ -115,7 +115,7 @@ Format: `"{resource}:{action}"`
 - `resource:delete` - Delete items
 - `org:manage` - Organization administration
 
-Defined in `src/pkg/auth/permissions.go`.
+Defined in `internal/auth/permissions.go`.
 
 ### Permission Checks
 
@@ -169,7 +169,7 @@ func (a *orgResolverAdapter) ResolveByProviderID(ctx context.Context, id string)
 
 **3. Wired in initialization:**
 
-Resolvers registered in `src/main/cmd/init_mods.go` after organization module loads.
+Resolvers registered in `internal/bootstrap/init_mods.go` after organization module loads.
 
 ## Route Protection Patterns
 
@@ -214,14 +214,14 @@ adminGroup.Use(authMiddleware.RequireRole(auth.RoleAdmin))
 
 ## Adding New Permissions
 
-**1. Define permission constant** in `src/pkg/auth/permissions.go`:
+**1. Define permission constant** in `internal/auth/permissions.go`:
 
 ```go
 const PermResourceView = Permission("resource:view")
 const PermResourceCreate = Permission("resource:create")
 ```
 
-**2. Assign to roles** in `src/pkg/auth/rbac.go`:
+**2. Assign to roles** in `internal/auth/rbac.go`:
 
 ```go
 {
@@ -289,14 +289,14 @@ func (h *Handler) PublicResource(c *gin.Context) {
 
 | Component | Path |
 |-----------|------|
-| Auth provider interface | `src/pkg/auth/auth.go` |
-| Middleware | `src/pkg/auth/middleware.go` |
-| Context helpers | `src/pkg/auth/context.go` |
-| RBAC definitions | `src/pkg/auth/rbac.go` |
-| Roles | `src/pkg/auth/roles.go` |
-| Permissions | `src/pkg/auth/permissions.go` |
-| Resolvers | `src/pkg/auth/resolvers.go` |
-| Stytch adapter | `src/pkg/auth/adapters/stytch/` |
+| Auth provider interface | `internal/auth/auth.go` |
+| Middleware | `internal/auth/middleware.go` |
+| Context helpers | `internal/auth/context.go` |
+| RBAC definitions | `internal/auth/rbac.go` |
+| Roles | `internal/auth/roles.go` |
+| Permissions | `internal/auth/permissions.go` |
+| Resolvers | `internal/auth/resolvers.go` |
+| Stytch adapter | `internal/auth/adapters/stytch/` |
 
 ## Next Steps
 

@@ -26,9 +26,6 @@ func NewCompositeRepository(cfg *config.Config, r2Repo domain.R2Repository, meta
 }
 
 func (r *compositeRepository) Upload(ctx context.Context, file *domain.FileAsset, content io.Reader) error {
-	fmt.Printf("[UPLOAD-DEBUG] ==============================================\n")
-	fmt.Printf("[UPLOAD-DEBUG] Starting file upload process\n")
-	fmt.Printf("[UPLOAD-DEBUG] File details:\n")
 	fmt.Printf("  - Filename: %s\n", file.Filename)
 	fmt.Printf("  - Size: %d bytes\n", file.Size)
 	fmt.Printf("  - Content Type: %s\n", file.ContentType)
@@ -39,28 +36,23 @@ func (r *compositeRepository) Upload(ctx context.Context, file *domain.FileAsset
 	file.BucketName = r.bucketName
 	file.StoragePath = r.generateStoragePath(file.Category, file.Context, file.Filename)
 	
-	fmt.Printf("[UPLOAD-DEBUG] Initial configuration:\n")
 	fmt.Printf("  - Bucket Name: %s\n", file.BucketName)
 	fmt.Printf("  - Initial Storage Path: %s\n", file.StoragePath)
 	
 	// First, save metadata to get database ID
-	fmt.Printf("[UPLOAD-DEBUG] Step 1: Saving metadata to database...\n")
 	savedFile, err := r.metadataRepo.Create(ctx, file)
 	if err != nil {
 		fmt.Printf("[UPLOAD-ERROR] Failed to save file metadata: %v\n", err)
 		return fmt.Errorf("failed to save file metadata: %w", err)
 	}
 	
-	fmt.Printf("[UPLOAD-DEBUG] Metadata saved successfully:\n")
 	fmt.Printf("  - Assigned File ID: %d\n", savedFile.ID)
 	fmt.Printf("  - Database Storage Path: %s\n", savedFile.StoragePath)
 	
 	// Use database ID as part of the R2 object key
 	objectKey := r.generateObjectKey(savedFile.ID, savedFile.Filename)
-	fmt.Printf("[UPLOAD-DEBUG] Step 2: Generated R2 object key: %s\n", objectKey)
 
 	// Upload to R2
-	fmt.Printf("[UPLOAD-DEBUG] Step 3: Uploading to R2...\n")
 	fmt.Printf("  - Bucket: %s\n", r.bucketName)
 	fmt.Printf("  - Object Key: %s\n", objectKey)
 	fmt.Printf("  - File Size: %d bytes\n", file.Size)
@@ -75,10 +67,8 @@ func (r *compositeRepository) Upload(ctx context.Context, file *domain.FileAsset
 		return fmt.Errorf("failed to upload file to R2: %w", err)
 	}
 
-	fmt.Printf("[UPLOAD-DEBUG] R2 upload successful\n")
 	
 	// Update storage path with the actual object key
-	fmt.Printf("[UPLOAD-DEBUG] Step 4: Updating database storage path...\n")
 	fmt.Printf("  - Old Path: %s\n", savedFile.StoragePath)
 	fmt.Printf("  - New Path: %s\n", objectKey)
 	

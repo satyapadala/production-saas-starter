@@ -131,7 +131,7 @@ Configure in `FileService` initialization.
 - `CategoryVideo` - Videos
 - `CategoryArchive` - ZIP, TAR files
 
-Defined in `src/pkg/file_manager/domain/constants.go`.
+Defined in `internal/files/domain/constants.go`.
 
 ## Configuration
 
@@ -209,11 +209,11 @@ func (s *service) DeleteResource(ctx context.Context, resourceID int32) error {
 
 | Component | Path |
 |-----------|------|
-| Domain entities | `src/pkg/file_manager/domain/` |
-| File service | `src/pkg/file_manager/internal/app/` |
-| R2 repository | `src/pkg/file_manager/internal/infra/r2/` |
-| Metadata repository | `src/pkg/file_manager/internal/infra/metadata/` |
-| Constants | `src/pkg/file_manager/domain/constants.go` |
+| Domain entities | `internal/files/domain/` |
+| File service | `internal/files/internal/app/` |
+| R2 repository | `internal/files/internal/infra/r2/` |
+| Metadata repository | `internal/files/internal/infra/metadata/` |
+| Constants | `internal/files/domain/constants.go` |
 
 ## Next Steps
 

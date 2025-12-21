@@ -272,61 +272,47 @@ func NumericFromDecimal(d *decimal.Decimal) pgtype.Numeric {
 
 // NumericFromFloat32 converts float32 to pgtype.Numeric
 func NumericFromFloat32(f float32) pgtype.Numeric {
-	fmt.Printf("[NUMERIC-DEBUG] Converting float32 to Numeric: %f\n", f)
 	numeric := pgtype.Numeric{}
 	err := numeric.Scan(fmt.Sprintf("%.6f", f))
 	if err != nil {
-		fmt.Printf("[NUMERIC-DEBUG] Failed to convert float32 to Numeric: %v\n", err)
 		return pgtype.Numeric{Valid: false}
 	}
-	fmt.Printf("[NUMERIC-DEBUG] Numeric conversion successful, Valid: %v\n", numeric.Valid)
 	return numeric
 }
 
 // Float32FromNumeric converts pgtype.Numeric to float32
 func Float32FromNumeric(n pgtype.Numeric) float32 {
-	fmt.Printf("[NUMERIC-DEBUG] Converting Numeric to float32, Valid: %v\n", n.Valid)
 	if !n.Valid {
-		fmt.Printf("[NUMERIC-DEBUG] Numeric is invalid, returning 0\n")
 		return 0
 	}
 
 	val, err := n.Value()
 	if err != nil {
-		fmt.Printf("[NUMERIC-DEBUG] Failed to get value from Numeric: %v\n", err)
 		return 0
 	}
 
-	fmt.Printf("[NUMERIC-DEBUG] Numeric value: %v (type: %T)\n", val, val)
 
 	// Handle different return types from PostgreSQL numeric
 	switch v := val.(type) {
 	case float64:
 		result := float32(v)
-		fmt.Printf("[NUMERIC-DEBUG] Converted from float64: %f\n", result)
 		return result
 	case string:
 		// Parse string representation like "0.9000"
 		if f64, err := strconv.ParseFloat(v, 64); err == nil {
 			result := float32(f64)
-			fmt.Printf("[NUMERIC-DEBUG] Converted from string: %f\n", result)
 			return result
 		}
-		fmt.Printf("[NUMERIC-DEBUG] Failed to parse string: %s\n", v)
 	case int64:
 		result := float32(v)
-		fmt.Printf("[NUMERIC-DEBUG] Converted from int64: %f\n", result)
 		return result
 	case int32:
 		result := float32(v)
-		fmt.Printf("[NUMERIC-DEBUG] Converted from int32: %f\n", result)
 		return result
 	case int:
 		result := float32(v)
-		fmt.Printf("[NUMERIC-DEBUG] Converted from int: %f\n", result)
 		return result
 	}
-	fmt.Printf("[NUMERIC-DEBUG] No matching type conversion, returning 0\n")
 	return 0
 }
 

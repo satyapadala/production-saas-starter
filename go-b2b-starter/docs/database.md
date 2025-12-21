@@ -6,9 +6,9 @@ The database layer uses PostgreSQL with SQLC for type-safe SQL operations and th
 
 The database layer has three components:
 
-**1. Store Interfaces** (`src/pkg/db/adapters/`) - Contracts for database operations
-**2. Store Adapters** (`src/pkg/db/postgres/adapter_impl/`) - Implement interfaces using SQLC
-**3. SQLC Generated Code** (`src/pkg/db/postgres/sqlc/gen/`) - Auto-generated from SQL queries
+**1. Store Interfaces** (`internal/db/adapters/`) - Contracts for database operations
+**2. Store Adapters** (`internal/db/postgres/adapter_impl/`) - Implement interfaces using SQLC
+**3. SQLC Generated Code** (`internal/db/postgres/sqlc/gen/`) - Auto-generated from SQL queries
 
 ### Why Use Adapters?
 
@@ -21,7 +21,7 @@ The database layer has three components:
 
 ### 1. Write SQL Query
 
-Create queries in `src/pkg/db/postgres/sqlc/query/{domain}.sql`:
+Create queries in `internal/db/postgres/sqlc/query/{domain}.sql`:
 
 ```sql
 -- name: GetResourceByID :one
@@ -49,13 +49,13 @@ LIMIT $1 OFFSET $2;
 make sqlc
 ```
 
-Generates Go code in `src/pkg/db/postgres/sqlc/gen/`.
+Generates Go code in `internal/db/postgres/sqlc/gen/`.
 
 **Never edit generated files** - they are regenerated on every run.
 
 ### 3. Create Store Interface
 
-Define interface in `src/pkg/db/adapters/resource_store.go`:
+Define interface in `internal/db/adapters/resource_store.go`:
 
 ```go
 type ResourceStore interface {
@@ -67,7 +67,7 @@ type ResourceStore interface {
 
 ### 4. Implement Adapter
 
-Create adapter in `src/pkg/db/postgres/adapter_impl/resource_store.go`:
+Create adapter in `internal/db/postgres/adapter_impl/resource_store.go`:
 
 ```go
 type resourceStore struct {
@@ -85,7 +85,7 @@ func (s *resourceStore) GetResourceByID(ctx context.Context, id int32) (sqlc.Res
 
 ### 5. Register in DI
 
-Add to `src/pkg/db/inject.go`:
+Add to `internal/db/inject.go`:
 
 ```go
 container.Provide(func(sqlcStore sqlc.Store) adapters.ResourceStore {
@@ -97,7 +97,7 @@ container.Provide(func(sqlcStore sqlc.Store) adapters.ResourceStore {
 
 ### File Structure
 
-Migrations live in `src/pkg/db/postgres/sqlc/migrations/`:
+Migrations live in `internal/db/postgres/sqlc/migrations/`:
 
 ```
 000001_create_schema.up.sql
@@ -164,7 +164,7 @@ pgText := postgres.ToPgText(str)
 num := postgres.Int32FromPgInt4(dbRecord.NullableInt)
 ```
 
-Helper functions in `src/pkg/db/postgres/types_transform.go`.
+Helper functions in `internal/db/postgres/types_transform.go`.
 
 ### JSONB Fields
 
@@ -178,7 +178,7 @@ data := postgres.JSONBToMap(dbRecord.Metadata)
 
 ## Error Handling
 
-The database layer provides specific error types in `src/pkg/db/core/errors.go`:
+The database layer provides specific error types in `internal/db/core/errors.go`:
 
 **Common Errors:**
 - `ErrNoRows` - Query returned no results
@@ -303,14 +303,14 @@ CREATE INDEX idx_resources_org_status ON resources(organization_id, status);
 
 | Component | Path |
 |-----------|------|
-| Store interfaces | `src/pkg/db/adapters/` |
-| Store implementations | `src/pkg/db/postgres/adapter_impl/` |
-| SQL queries | `src/pkg/db/postgres/sqlc/query/` |
-| Migrations | `src/pkg/db/postgres/sqlc/migrations/` |
-| Generated code | `src/pkg/db/postgres/sqlc/gen/` |
-| Type helpers | `src/pkg/db/postgres/types_transform.go` |
-| Error types | `src/pkg/db/core/errors.go` |
-| DI setup | `src/pkg/db/inject.go` |
+| Store interfaces | `internal/db/adapters/` |
+| Store implementations | `internal/db/postgres/adapter_impl/` |
+| SQL queries | `internal/db/postgres/sqlc/query/` |
+| Migrations | `internal/db/postgres/sqlc/migrations/` |
+| Generated code | `internal/db/postgres/sqlc/gen/` |
+| Type helpers | `internal/db/postgres/types_transform.go` |
+| Error types | `internal/db/core/errors.go` |
+| DI setup | `internal/db/inject.go` |
 
 ## Next Steps
 
