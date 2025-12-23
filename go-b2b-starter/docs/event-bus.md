@@ -170,7 +170,7 @@ func (l *processingListener) HandleFileUploaded(ctx context.Context, event event
 Register listeners during module initialization:
 
 ```go
-// src/app/resources/cmd/init.go
+// internal/resources/cmd/init.go
 func Init(container *dig.Container) error {
     return container.Invoke(func(
         eventBus eventbus.EventBus,
@@ -185,12 +185,12 @@ func Init(container *dig.Container) error {
 
 | Component | Path |
 |-----------|------|
-| Event bus interface | `src/pkg/eventbus/eventbus.go` |
-| Event interface | `src/pkg/eventbus/event.go` |
-| Base event | `src/pkg/eventbus/base_event.go` |
-| Implementation | `src/pkg/eventbus/memory_eventbus.go` |
-| Domain events | `src/app/*/domain/events/` |
-| Event listeners | `src/app/*/domain/listeners/` |
+| Event bus interface | `internal/eventbus/eventbus.go` |
+| Event interface | `internal/eventbus/event.go` |
+| Base event | `internal/eventbus/base_event.go` |
+| Implementation | `internal/eventbus/memory_eventbus.go` |
+| Domain events | `internal/*/domain/events/` |
+| Event listeners | `internal/*/domain/listeners/` |
 
 ## Next Steps
 

@@ -113,7 +113,7 @@ Polar sends webhooks for billing events.
 
 ### Webhook Handler
 
-Located in `src/api/webhooks/polar_handler.go`.
+Located in `internal/billing/polar_handler.go`.
 
 **Events handled:**
 - `subscription.created`
@@ -165,7 +165,7 @@ Usage synced to Polar periodically:
 2. Batch send to Polar meters API
 3. Polar charges based on metered usage
 
-Configured in `src/app/billing/app/services/metering_service.go`.
+Configured in `internal/billing/app/services/metering_service.go`.
 
 ## Configuration
 
@@ -237,12 +237,12 @@ func (h *WebhookHandler) HandlePaymentFailed(ctx context.Context, event *Event) 
 
 | Component | Path |
 |-----------|------|
-| Billing domain | `src/app/billing/domain/` |
-| Billing service | `src/app/billing/app/services/` |
-| Polar adapter | `src/app/billing/infra/adapters/polar/` |
-| Paywall middleware | `src/pkg/paywall/` |
-| Polar client | `src/pkg/polar/` |
-| Webhook handlers | `src/api/webhooks/` |
+| Billing domain | `internal/billing/domain/` |
+| Billing service | `internal/billing/app/services/` |
+| Polar adapter | `internal/billing/infra/adapters/polar/` |
+| Paywall middleware | `internal/paywall/` |
+| Polar client | `internal/polar/` |
+| Webhook handlers | `internal/billing/` |
 
 ## Next Steps
 

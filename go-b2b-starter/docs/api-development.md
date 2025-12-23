@@ -15,7 +15,7 @@ Building an API endpoint involves these layers:
 
 ### Create Migration
 
-Add migration files in `src/pkg/db/postgres/sqlc/migrations/`:
+Add migration files in `internal/db/postgres/sqlc/migrations/`:
 
 ```sql
 -- 000015_create_resources.up.sql
@@ -33,7 +33,7 @@ CREATE INDEX idx_resources_org ON app.resources(organization_id);
 
 ### Write SQL Queries
 
-In `src/pkg/db/postgres/sqlc/query/resources.sql`:
+In `internal/db/postgres/sqlc/query/resources.sql`:
 
 ```sql
 -- name: GetResourceByID :one
@@ -58,7 +58,7 @@ make sqlc
 
 ### Create Store Interface
 
-In `src/pkg/db/adapters/resource_store.go`:
+In `internal/db/adapters/resource_store.go`:
 
 ```go
 type ResourceStore interface {
@@ -70,7 +70,7 @@ type ResourceStore interface {
 
 ### Implement Adapter
 
-In `src/pkg/db/postgres/adapter_impl/resource_store.go`:
+In `internal/db/postgres/adapter_impl/resource_store.go`:
 
 ```go
 type resourceStore struct {
@@ -88,7 +88,7 @@ func (s *resourceStore) GetResourceByID(ctx context.Context, id int32) (sqlc.Res
 
 ### Register in DI
 
-In `src/pkg/db/inject.go`:
+In `internal/db/inject.go`:
 
 ```go
 container.Provide(func(sqlcStore sqlc.Store) adapters.ResourceStore {
@@ -100,7 +100,7 @@ container.Provide(func(sqlcStore sqlc.Store) adapters.ResourceStore {
 
 ### Create Entity
 
-In `src/app/resources/domain/entity.go`:
+In `internal/resources/domain/entity.go`:
 
 ```go
 type Resource struct {
@@ -122,7 +122,7 @@ func (r *Resource) Validate() error {
 
 ### Define Repository Interface
 
-In `src/app/resources/domain/repository.go`:
+In `internal/resources/domain/repository.go`:
 
 ```go
 type ResourceRepository interface {
@@ -136,7 +136,7 @@ type ResourceRepository interface {
 
 ### Implement Repository
 
-In `src/app/resources/infra/repositories/resource_repository.go`:
+In `internal/resources/infra/repositories/resource_repository.go`:
 
 ```go
 type resourceRepository struct {
@@ -167,7 +167,7 @@ func (r *resourceRepository) Create(ctx context.Context, resource *domain.Resour
 
 ### Define Service Interface
 
-In `src/app/resources/app/services/resource_service_interface.go`:
+In `internal/resources/app/services/resource_service_interface.go`:
 
 ```go
 type ResourceService interface {
@@ -179,7 +179,7 @@ type ResourceService interface {
 
 ### Implement Service
 
-In `src/app/resources/app/services/resource_service.go`:
+In `internal/resources/app/services/resource_service.go`:
 
 ```go
 type resourceService struct {
@@ -216,7 +216,7 @@ func (s *resourceService) CreateResource(
 
 ### Create Handler
 
-In `src/api/resources/handler.go`:
+In `internal/resources/handler.go`:
 
 ```go
 type Handler struct {
@@ -255,7 +255,7 @@ func (h *Handler) CreateResource(c *gin.Context) {
 
 ### Register Routes
 
-In `src/api/resources/routes.go`:
+In `internal/resources/routes.go`:
 
 ```go
 type Routes struct {
@@ -286,7 +286,7 @@ func (r *Routes) Register(router *gin.Engine) {
 
 ### Create Module
 
-In `src/app/resources/module.go`:
+In `internal/resources/module.go`:
 
 ```go
 type Module struct {
@@ -318,7 +318,7 @@ func (m *Module) RegisterDependencies() error {
 
 ### Initialize Module
 
-In `src/app/resources/cmd/init.go`:
+In `internal/resources/cmd/init.go`:
 
 ```go
 func Init(container *dig.Container) error {
@@ -329,7 +329,7 @@ func Init(container *dig.Container) error {
 
 ### Register API
 
-In `src/api/resources/provider.go`:
+In `internal/resources/provider.go`:
 
 ```go
 func RegisterDependencies(container *dig.Container) error {
@@ -359,7 +359,7 @@ func RegisterDependencies(container *dig.Container) error {
 ### File Structure
 
 ```
-src/app/resources/
+internal/resources/
 ├── domain/
 │   ├── entity.go
 │   ├── repository.go
@@ -372,7 +372,7 @@ src/app/resources/
 ├── cmd/init.go
 └── module.go
 
-src/api/resources/
+internal/resources/
 ├── handler.go
 ├── routes.go
 └── provider.go

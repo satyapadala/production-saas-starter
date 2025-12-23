@@ -27,9 +27,9 @@ make dev           # Start dev server with hot reload
 
 The codebase follows Clean Architecture with three main layers:
 
-**API Layer** (`src/api/`) - HTTP handlers and routes
-**Application Layer** (`src/app/`) - Business logic organized by modules
-**Shared Layer** (`src/pkg/`) - Reusable infrastructure packages
+**API Layer** (`internal/`) - HTTP handlers and routes
+**Application Layer** (`internal/`) - Business logic organized by modules
+**Shared Layer** (`internal/`) - Reusable infrastructure packages
 
 Each application module contains:
 - `domain/` - Entities, interfaces, business rules
