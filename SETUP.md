@@ -1,5 +1,7 @@
 # 🛠️ Setup Guide
 
+> **Looking for detailed setup?** See **[DEVELOPMENT.md](./DEVELOPMENT.md)** for comprehensive guidance including multi-platform prerequisites, troubleshooting, database access, and daily workflow tips.
+
 This document covers the manual steps to verify your environment if `setup.sh` is not sufficient.
 
 ## 1. Environment Variables

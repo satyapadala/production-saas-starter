@@ -100,7 +100,7 @@ chmod +x setup.sh && ./setup.sh
 3.  **Visit:** [http://localhost:3000](http://localhost:3000)
 
 > [!IMPORTANT]
-> See **[SETUP.md](./SETUP.md)** for full details.
+> See **[SETUP.md](./SETUP.md)** for quick setup or **[DEVELOPMENT.md](./DEVELOPMENT.md)** for comprehensive guidance including multi-platform prerequisites, troubleshooting, and daily workflow tips.
 
 ## 🛡️ License
 
