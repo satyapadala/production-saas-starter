@@ -21,7 +21,11 @@ Thumbs.db
 *.key
 
 # --- Claude Code ---
-.claude/
+# Ignore .claude/ contents but allow CLAUDE.md files
+.claude/*
+!.claude/CLAUDE.md
+**/.claude/*
+!**/.claude/CLAUDE.md
 
 # --- Logs ---
 *.log
