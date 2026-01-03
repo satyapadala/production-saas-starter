@@ -18,7 +18,7 @@ const (
 	BothOutput
 )
 
-type Fields map[string]interface{}
+type Fields = map[string]interface{}
 
 type Logger interface {
 	Debug(msg string, fields ...Fields)
